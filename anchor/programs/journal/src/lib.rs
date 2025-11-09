@@ -32,6 +32,9 @@ pub mod journal {
     }
 
     pub fn delete_journal_entry(ctx: Context<DeleteJournalEntry>, _title: String) -> Result<()> {
+        let journal_entry = &mut ctx.accounts.journal_entry;
+        journal_entry.close(ctx.accounts.owner.to_account_info());
+
         Ok(())
     }
 }
