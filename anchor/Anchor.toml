@@ -1,13 +1,13 @@
 [toolchain]
-package_manager = "yarn"
 anchor_version = "0.31.1"
+package_manager = "yarn"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.localnet]
-journal = "Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe"
+journal = "G4KmUTnU9ehU4ymcvsVjFbMK8VY6bF3nGP8L7acP9Sfz"
 
 [registry]
 url = "https://api.apr.dev"
