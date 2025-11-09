@@ -1,4 +1,4 @@
-import { JournalAccount, getCloseInstruction } from '@project/anchor'
+import { JournalAccount, getDeleteJournalEntryInstructionAsync } from '@project/anchor'
 import { useMutation } from '@tanstack/react-query'
 import { UiWalletAccount, useWalletUiSigner } from '@wallet-ui/react'
 import { useWalletUiSignAndSend } from '@wallet-ui/react-gill'
@@ -12,7 +12,9 @@ export function useJournalCloseMutation({ account, journal }: { account: UiWalle
 
   return useMutation({
     mutationFn: async () => {
-      return await signAndSend(getCloseInstruction({ payer: signer, journal: journal.address }), signer)
+      const title = journal.data.title
+      const ix = await getDeleteJournalEntryInstructionAsync({ owner: signer, journalEntry: journal.address, title })
+      return await signAndSend(ix, signer)
     },
     onSuccess: async (tx) => {
       toastTx(tx)
