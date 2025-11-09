@@ -6,7 +6,103 @@
  * @see https://github.com/codama-idl/codama
  */
 
-import { type Address } from 'gill';
+import {
+  containsBytes,
+  fixEncoderSize,
+  getBytesEncoder,
+  type Address,
+  type ReadonlyUint8Array,
+} from 'gill';
+import {
+  type ParsedCreateJournalEntryInstruction,
+  type ParsedDeleteJournalEntryInstruction,
+  type ParsedUpdateJournalEntryInstruction,
+} from '../instructions';
 
 export const JOURNAL_PROGRAM_ADDRESS =
   'G4KmUTnU9ehU4ymcvsVjFbMK8VY6bF3nGP8L7acP9Sfz' as Address<'G4KmUTnU9ehU4ymcvsVjFbMK8VY6bF3nGP8L7acP9Sfz'>;
+
+export enum JournalAccount {
+  JournalEntryState,
+}
+
+export function identifyJournalAccount(
+  account: { data: ReadonlyUint8Array } | ReadonlyUint8Array
+): JournalAccount {
+  const data = 'data' in account ? account.data : account;
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([113, 86, 110, 124, 140, 14, 58, 66])
+      ),
+      0
+    )
+  ) {
+    return JournalAccount.JournalEntryState;
+  }
+  throw new Error(
+    'The provided account could not be identified as a journal account.'
+  );
+}
+
+export enum JournalInstruction {
+  CreateJournalEntry,
+  DeleteJournalEntry,
+  UpdateJournalEntry,
+}
+
+export function identifyJournalInstruction(
+  instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array
+): JournalInstruction {
+  const data = 'data' in instruction ? instruction.data : instruction;
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([48, 65, 201, 186, 25, 41, 127, 0])
+      ),
+      0
+    )
+  ) {
+    return JournalInstruction.CreateJournalEntry;
+  }
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([156, 50, 93, 5, 157, 97, 188, 114])
+      ),
+      0
+    )
+  ) {
+    return JournalInstruction.DeleteJournalEntry;
+  }
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([113, 164, 49, 62, 43, 83, 194, 172])
+      ),
+      0
+    )
+  ) {
+    return JournalInstruction.UpdateJournalEntry;
+  }
+  throw new Error(
+    'The provided instruction could not be identified as a journal instruction.'
+  );
+}
+
+export type ParsedJournalInstruction<
+  TProgram extends string = 'G4KmUTnU9ehU4ymcvsVjFbMK8VY6bF3nGP8L7acP9Sfz',
+> =
+  | ({
+      instructionType: JournalInstruction.CreateJournalEntry;
+    } & ParsedCreateJournalEntryInstruction<TProgram>)
+  | ({
+      instructionType: JournalInstruction.DeleteJournalEntry;
+    } & ParsedDeleteJournalEntryInstruction<TProgram>)
+  | ({
+      instructionType: JournalInstruction.UpdateJournalEntry;
+    } & ParsedUpdateJournalEntryInstruction<TProgram>);
