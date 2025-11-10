@@ -11,14 +11,14 @@ export function JournalUiButtonClose({ account, journal }: { account: UiWalletAc
     <Button
       variant="destructive"
       onClick={() => {
-        if (!window.confirm('Are you sure you want to close this account?')) {
+        if (!window.confirm('Are you sure you want to delete this journal entry?')) {
           return
         }
         return closeMutation.mutateAsync()
       }}
       disabled={closeMutation.isPending}
     >
-      Close
+      Delete
     </Button>
   )
 }

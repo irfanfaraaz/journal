@@ -12,8 +12,8 @@ export function JournalUiList({ account }: { account: UiWalletAccount }) {
   if (!journalAccountsQuery.data?.length) {
     return (
       <div className="text-center">
-        <h2 className={'text-2xl'}>No accounts</h2>
-        No accounts found. Initialize one to get started.
+        <h2 className={'text-2xl'}>No journal entries</h2>
+        No journal entries found. Create one to get started.
       </div>
     )
   }

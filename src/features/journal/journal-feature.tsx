@@ -1,7 +1,7 @@
 import { useSolana } from '@/components/solana/use-solana'
 import { WalletDropdown } from '@/components/wallet-dropdown'
 import { AppHero } from '@/components/app-hero'
-import { JournalUiButtonInitialize } from './ui/journal-ui-button-initialize'
+import { JournalUiFormCreate } from './ui/journal-ui-form-create'
 import { JournalUiList } from './ui/journal-ui-list'
 import { JournalUiProgramExplorerLink } from './ui/journal-ui-program-explorer-link'
 import { JournalUiProgramGuard } from './ui/journal-ui-program-guard'
@@ -15,7 +15,7 @@ export default function JournalFeature() {
         title="Journal"
         subtitle={
           account
-            ? "Initialize a new journal onchain by clicking the button. Use the program's methods (increment, decrement, set, and close) to change the state of the account."
+            ? 'Create journal entries onchain. Each entry has a title and message. You can update the message or delete entries.'
             : 'Select a wallet to run the program.'
         }
       >
@@ -23,7 +23,7 @@ export default function JournalFeature() {
           <JournalUiProgramExplorerLink />
         </p>
         {account ? (
-          <JournalUiButtonInitialize account={account} />
+          <JournalUiFormCreate account={account} />
         ) : (
           <div style={{ display: 'inline-block' }}>
             <WalletDropdown />
